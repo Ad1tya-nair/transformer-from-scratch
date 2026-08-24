@@ -1,0 +1,200 @@
+{
+    "seed": 42,
+    "total_books": 46,
+    "total_words": 4526046,
+    "target_ratios": {
+        "train": 0.8,
+        "validation": 0.1,
+        "test": 0.1
+    },
+    "train": [
+        {
+            "file": "alice_in_wonderland.txt",
+            "words": 26526
+        },
+        {
+            "file": "around_the_world.txt",
+            "words": 63335
+        },
+        {
+            "file": "arthuroftheroundtable.txt",
+            "words": 98568
+        },
+        {
+            "file": "centeroftheearch.txt",
+            "words": 85825
+        },
+        {
+            "file": "china.txt",
+            "words": 118882
+        },
+        {
+            "file": "countess_of_pembroke.txt",
+            "words": 345021
+        },
+        {
+            "file": "cthulu.txt",
+            "words": 11971
+        },
+        {
+            "file": "dracula.txt",
+            "words": 160727
+        },
+        {
+            "file": "empty_house.txt",
+            "words": 66897
+        },
+        {
+            "file": "farewell.txt",
+            "words": 88662
+        },
+        {
+            "file": "honeymooninspace.txt",
+            "words": 63875
+        },
+        {
+            "file": "illiad.txt",
+            "words": 156452
+        },
+        {
+            "file": "jane_eyre_autobiography.txt",
+            "words": 185405
+        },
+        {
+            "file": "kidnapped.txt",
+            "words": 81913
+        },
+        {
+            "file": "king_in_yellow.txt",
+            "words": 71646
+        },
+        {
+            "file": "ladyofthelake.txt",
+            "words": 78539
+        },
+        {
+            "file": "lostworld.txt",
+            "words": 75760
+        },
+        {
+            "file": "maidofmars.txt",
+            "words": 47144
+        },
+        {
+            "file": "misplacedbattleship.txt",
+            "words": 11302
+        },
+        {
+            "file": "moby.txt",
+            "words": 212836
+        },
+        {
+            "file": "onwonderfulnight.txt",
+            "words": 77567
+        },
+        {
+            "file": "paradise.txt",
+            "words": 80029
+        },
+        {
+            "file": "peterpan.txt",
+            "words": 47269
+        },
+        {
+            "file": "phantom_of_the_opera.txt",
+            "words": 85581
+        },
+        {
+            "file": "pride_and_prejudice.txt",
+            "words": 127363
+        },
+        {
+            "file": "princessofmars.txt",
+            "words": 67437
+        },
+        {
+            "file": "railwaychildren.txt",
+            "words": 59355
+        },
+        {
+            "file": "riddle.txt",
+            "words": 108504
+        },
+        {
+            "file": "robinhood.txt",
+            "words": 111125
+        },
+        {
+            "file": "setinsilver.txt",
+            "words": 121663
+        },
+        {
+            "file": "thepirate.txt",
+            "words": 197405
+        },
+        {
+            "file": "thousandnights.txt",
+            "words": 178198
+        },
+        {
+            "file": "time_machine.txt",
+            "words": 32454
+        },
+        {
+            "file": "tomsawyer.txt",
+            "words": 70803
+        },
+        {
+            "file": "treasure_island.txt",
+            "words": 68637
+        },
+        {
+            "file": "trialbywater.txt",
+            "words": 1477
+        },
+        {
+            "file": "war_of_the_worlds.txt",
+            "words": 60076
+        },
+        {
+            "file": "wizard_of_oz.txt",
+            "words": 39649
+        }
+    ],
+    "validation": [
+        {
+            "file": "count.txt",
+            "words": 102981
+        },
+        {
+            "file": "gatsby.txt",
+            "words": 48208
+        },
+        {
+            "file": "secret_chimneys.txt",
+            "words": 74617
+        },
+        {
+            "file": "twenty_years.txt",
+            "words": 242060
+        }
+    ],
+    "test": [
+        {
+            "file": "hucleberryfin.txt",
+            "words": 111095
+        },
+        {
+            "file": "mysterious_affair.txt",
+            "words": 56536
+        },
+        {
+            "file": "threemusketeers.txt",
+            "words": 229430
+        },
+        {
+            "file": "treasureofpearks.txt",
+            "words": 75241
+        }
+    ]
+}

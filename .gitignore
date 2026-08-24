@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Generated tokenized datasets
+tokenized/
+*.bin
+
+# Raw corpus
+data/raw/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Processed corpus
+data/processed/
