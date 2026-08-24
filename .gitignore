@@ -21,3 +21,8 @@ Thumbs.db
 
 # Processed corpus
 data/processed/
+
+# Generated dataset splits
+data/splits/train.txt
+data/splits/validation.txt
+data/splits/test.txt
