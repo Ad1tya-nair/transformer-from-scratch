@@ -26,3 +26,5 @@ data/processed/
 data/splits/train.txt
 data/splits/validation.txt
 data/splits/test.txt
+
+notes
