@@ -1,4 +1,4 @@
-from dataset import LanguageModelDataset
+from data import LanguageModelDataset
 
 
 def main():
