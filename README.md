@@ -922,28 +922,6 @@ The goal is to keep the model small enough that its architecture and behaviour c
 
 ---
 
-# What I Want to Learn Next
-
-Possible future directions include:
-
-- Understanding attention mathematically in greater depth
-- Studying causal attention masking
-- Learning-rate scheduling
-- Learning-rate warmup
-- Gradient clipping
-- More systematic generation experiments
-- Top-p (nucleus) sampling
-- Better evaluation metrics
-- Larger context windows
-- Larger model configurations
-- Improved dataset cleaning
-- Comparing positional encoding approaches
-- Experimenting with different Transformer architectures
-- Understanding scaling behaviour
-
-The project will continue to evolve as a learning and experimentation exercise.
-
----
 
 # Disclaimer
 
