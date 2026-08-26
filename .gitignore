@@ -27,4 +27,7 @@ data/splits/train.txt
 data/splits/validation.txt
 data/splits/test.txt
 
-notes
+notes/
+
+checkpoints/
+checkpoints_fresh/

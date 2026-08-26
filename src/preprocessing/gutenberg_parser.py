@@ -1,8 +1,8 @@
 from pathlib import Path
+
 import re
 import unicodedata
 
-import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 
 
@@ -17,7 +17,7 @@ PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
 
 # ============================================================
-# GUTENBERG HEADER / FOOTER
+# GUTENBERG MARKERS
 # ============================================================
 
 GUTENBERG_START_MARKERS = [
@@ -32,67 +32,426 @@ GUTENBERG_END_MARKERS = [
 
 
 # ============================================================
-# TEXT CLEANING
+# MOJIBAKE REPAIR
+# ============================================================
+
+def repair_mojibake(text):
+    """
+    Repair UTF-8 text that was incorrectly decoded
+    using Windows-1252.
+    """
+
+    try:
+        repaired = text.encode(
+            "cp1252"
+        ).decode(
+            "utf-8"
+        )
+
+        return repaired
+
+    except UnicodeError:
+
+        return text
+
+# ============================================================
+# UNICODE NORMALIZATION
 # ============================================================
 
 def normalize_unicode(text):
-    """
-    Normalize Unicode characters into a consistent representation.
-    """
-    return unicodedata.normalize("NFKC", text)
 
+    return unicodedata.normalize(
+        "NFKC",
+        text
+    )
+
+
+# ============================================================
+# GUTENBERG WRAPPER REMOVAL
+# ============================================================
 
 def remove_gutenberg_boilerplate(text):
-    """
-    Remove Project Gutenberg header and footer.
-    """
 
     lines = text.splitlines()
 
     start_index = 0
     end_index = len(lines)
 
-    # Find beginning of actual book
     for i, line in enumerate(lines):
-        if any(marker in line for marker in GUTENBERG_START_MARKERS):
+
+        if any(
+            marker in line
+            for marker in GUTENBERG_START_MARKERS
+        ):
+
             start_index = i + 1
             break
 
-    # Find end of actual book
-    for i in range(start_index, len(lines)):
-        if any(marker in lines[i] for marker in GUTENBERG_END_MARKERS):
+    for i in range(
+        start_index,
+        len(lines)
+    ):
+
+        if any(
+            marker in lines[i]
+            for marker in GUTENBERG_END_MARKERS
+        ):
+
             end_index = i
             break
 
-    return "\n".join(lines[start_index:end_index])
+    return "\n".join(
+        lines[start_index:end_index]
+    )
 
+
+# ============================================================
+# FRONT MATTER HELPERS
+# ============================================================
+
+def is_transcriber_note_start(line):
+
+    normalized = (
+        line.strip()
+        .lower()
+        .replace("’", "'")
+    )
+
+    return (
+        normalized.startswith(
+            "transcriber's note"
+        )
+        or normalized.startswith(
+            "transcribers note"
+        )
+    )
+
+
+def is_editor_note_start(line):
+
+    normalized = (
+        line.strip()
+        .lower()
+        .replace("’", "'")
+    )
+
+    return (
+        normalized.startswith(
+            "editor's note"
+        )
+        or normalized.startswith(
+            "editors note"
+        )
+    )
+
+
+def is_gutenberg_note(line):
+
+    normalized = line.strip().lower()
+
+    return (
+        "note: project gutenberg" in normalized
+        or "project gutenberg has an html version" in normalized
+        or "project gutenberg e-text" in normalized
+    )
+
+
+def is_illustration_list(line):
+
+    normalized = line.strip().lower()
+
+    return (
+        normalized == "list of illustrations"
+        or normalized == "list of illustrations."
+    )
+
+
+def is_chapter_heading(line):
+
+    line = line.strip()
+
+    pattern = re.compile(
+        r"^(chapter|chap\.)\s+"
+        r"([ivxlcdm]+|\d+)\b",
+        re.IGNORECASE
+    )
+
+    return bool(
+        pattern.match(line)
+    )
+
+
+# ============================================================
+# REMOVE TRANSCRIBER / EDITORIAL NOTES
+# ============================================================
+
+def remove_note_blocks(lines):
+
+    cleaned = []
+
+    skip_mode = False
+
+    for i, line in enumerate(lines):
+
+        stripped = line.strip()
+
+        # ----------------------------------------------------
+        # Start of Transcriber's Note
+        # ----------------------------------------------------
+
+        if is_transcriber_note_start(
+            stripped
+        ):
+
+            skip_mode = True
+
+            continue
+
+        # ----------------------------------------------------
+        # Start of Editor's Note
+        # ----------------------------------------------------
+
+        if is_editor_note_start(
+            stripped
+        ):
+
+            skip_mode = True
+
+            continue
+
+        # ----------------------------------------------------
+        # Gutenberg-specific note
+        # ----------------------------------------------------
+
+        if is_gutenberg_note(
+            stripped
+        ):
+
+            skip_mode = True
+
+            continue
+
+        # ----------------------------------------------------
+        # End note block when we reach a strong
+        # book-content marker.
+        # ----------------------------------------------------
+
+        if skip_mode:
+
+            if is_chapter_heading(
+                stripped
+            ):
+
+                skip_mode = False
+
+                cleaned.append(
+                    line
+                )
+
+            continue
+
+        cleaned.append(
+            line
+        )
+
+    return cleaned
+
+
+# ============================================================
+# REMOVE KNOWN PUBLISHER MATERIAL
+# ============================================================
+
+def remove_publisher_front_matter(lines):
+
+    cleaned = []
+
+    skip_mode = False
+
+    publisher_markers = [
+        "books by the same author",
+        "list of illustrations",
+        "bibliophile edition",
+        "university library association",
+        "copyright",
+        "andrew lang edition",
+    ]
+
+    for line in lines:
+
+        normalized = (
+            line.strip()
+            .lower()
+        )
+
+        if any(
+            marker in normalized
+            for marker in publisher_markers
+        ):
+
+            skip_mode = True
+
+            continue
+
+        if skip_mode:
+
+            # Stop skipping when actual chapter
+            # content begins.
+
+            if is_chapter_heading(
+                line
+            ):
+
+                skip_mode = False
+
+                cleaned.append(
+                    line
+                )
+
+            continue
+
+        cleaned.append(
+            line
+        )
+
+    return cleaned
+
+
+# ============================================================
+# REMOVE OBVIOUS METADATA LINES
+# ============================================================
+
+def remove_metadata_lines(lines):
+
+    metadata_patterns = [
+
+        r"^\[illustration\]$",
+
+        r"^copyright,?\s+\d{4}$",
+
+        r"^by\s*$",
+
+        r"^university library association$",
+
+        r"^philadelphia$",
+
+    ]
+
+    compiled = [
+        re.compile(
+            pattern,
+            re.IGNORECASE
+        )
+        for pattern in metadata_patterns
+    ]
+
+    cleaned = []
+
+    for line in lines:
+
+        stripped = line.strip()
+
+        if any(
+            pattern.match(stripped)
+            for pattern in compiled
+        ):
+
+            continue
+
+        cleaned.append(
+            line
+        )
+
+    return cleaned
+
+
+# ============================================================
+# FRONT MATTER PIPELINE
+# ============================================================
+
+def remove_front_matter(text):
+
+    lines = text.splitlines()
+
+    original_count = len(lines)
+
+    lines = remove_note_blocks(
+        lines
+    )
+
+    lines = remove_publisher_front_matter(
+        lines
+    )
+
+    lines = remove_metadata_lines(
+        lines
+    )
+
+    removed = (
+        original_count
+        - len(lines)
+    )
+
+    print(
+        f"  Metadata/front-matter lines removed: "
+        f"{removed:,}"
+    )
+
+    return "\n".join(
+        lines
+    )
+
+
+# ============================================================
+# GENERAL CLEANING
+# ============================================================
 
 def clean_text(text):
-    """
-    General text normalization after Gutenberg boilerplate removal.
-    """
 
-    text = normalize_unicode(text)
+    # Repair encoding corruption first
+    text = repair_mojibake(
+        text
+    )
 
-    # Normalize line endings
-    text = text.replace("\r\n", "\n")
-    text = text.replace("\r", "\n")
+    text = normalize_unicode(
+        text
+    )
 
-    # Remove excessive whitespace
-    text = re.sub(r"[ \t]+", " ", text)
+    text = text.replace(
+        "\r\n",
+        "\n"
+    )
 
-    # Collapse excessive blank lines
-    text = re.sub(r"\n{3,}", "\n\n", text)
+    text = text.replace(
+        "\r",
+        "\n"
+    )
 
-    # Strip whitespace from each line
-    lines = [line.strip() for line in text.splitlines()]
+    text = re.sub(
+        r"[ \t]+",
+        " ",
+        text
+    )
 
-    # Remove empty lines
-    lines = [line for line in lines if line]
+    text = re.sub(
+        r"\n{3,}",
+        "\n\n",
+        text
+    )
 
-    text = "\n".join(lines)
+    lines = [
+        line.strip()
+        for line in text.splitlines()
+    ]
 
-    return text.strip()
+    lines = [
+        line
+        for line in lines
+        if line
+    ]
+
+    return "\n".join(
+        lines
+    ).strip()
 
 
 # ============================================================
@@ -100,13 +459,10 @@ def clean_text(text):
 # ============================================================
 
 def segment_sentences(text):
-    """
-    Split cleaned text into sentences.
 
-    Each sentence is written on its own line.
-    """
-
-    paragraphs = text.split("\n")
+    paragraphs = text.split(
+        "\n"
+    )
 
     sentences = []
 
@@ -117,14 +473,21 @@ def segment_sentences(text):
         if not paragraph:
             continue
 
-        paragraph_sentences = sent_tokenize(paragraph)
+        paragraph_sentences = (
+            sent_tokenize(
+                paragraph
+            )
+        )
 
         for sentence in paragraph_sentences:
 
             sentence = sentence.strip()
 
             if sentence:
-                sentences.append(sentence)
+
+                sentences.append(
+                    sentence
+                )
 
     return sentences
 
@@ -133,24 +496,34 @@ def segment_sentences(text):
 # STATISTICS
 # ============================================================
 
-def calculate_statistics(sentences):
-    """
-    Calculate basic corpus statistics.
-    """
+def calculate_statistics(
+    sentences
+):
 
-    full_text = " ".join(sentences)
+    full_text = " ".join(
+        sentences
+    )
 
-    words = word_tokenize(full_text)
+    words = word_tokenize(
+        full_text
+    )
 
-    # Count alphabetic/numeric tokens as words
     word_count = sum(
-        1 for token in words
-        if re.search(r"[A-Za-z0-9]", token)
+        1
+        for token in words
+        if re.search(
+            r"[A-Za-z0-9]",
+            token
+        )
     )
 
     return {
-        "characters": len(full_text),
-        "sentences": len(sentences),
+        "characters": len(
+            full_text
+        ),
+        "sentences": len(
+            sentences
+        ),
         "words": word_count,
     }
 
@@ -159,32 +532,72 @@ def calculate_statistics(sentences):
 # PROCESS ONE FILE
 # ============================================================
 
-def process_file(input_path, output_path):
+def process_file(
+    input_path,
+    output_path
+):
 
-    print(f"\nProcessing: {input_path.name}")
+    print(
+        f"\nProcessing: "
+        f"{input_path.name}"
+    )
 
-    # Read raw Gutenberg file
     text = input_path.read_text(
         encoding="utf-8",
         errors="ignore"
     )
 
-    raw_characters = len(text)
+    raw_characters = len(
+        text
+    )
 
-    # Gutenberg cleanup
-    text = remove_gutenberg_boilerplate(text)
+    # --------------------------------------------------------
+    # Gutenberg wrapper
+    # --------------------------------------------------------
 
-    # General cleanup
-    text = clean_text(text)
+    text = remove_gutenberg_boilerplate(
+        text
+    )
 
+    # --------------------------------------------------------
+    # Front matter / metadata
+    # --------------------------------------------------------
+
+    text = remove_front_matter(
+        text
+    )
+
+    # --------------------------------------------------------
+    # General cleanup + encoding repair
+    # --------------------------------------------------------
+
+    text = clean_text(
+        text
+    )
+
+    # --------------------------------------------------------
     # Sentence segmentation
-    sentences = segment_sentences(text)
+    # --------------------------------------------------------
 
+    sentences = segment_sentences(
+        text
+    )
+
+    # --------------------------------------------------------
     # Statistics
-    stats = calculate_statistics(sentences)
+    # --------------------------------------------------------
 
-    # Save one sentence per line
-    output_text = "\n".join(sentences)
+    stats = calculate_statistics(
+        sentences
+    )
+
+    # --------------------------------------------------------
+    # Save
+    # --------------------------------------------------------
+
+    output_text = "\n".join(
+        sentences
+    )
 
     output_path.parent.mkdir(
         parents=True,
@@ -196,10 +609,26 @@ def process_file(input_path, output_path):
         encoding="utf-8"
     )
 
-    print(f"  Characters: {raw_characters:,} → {stats['characters']:,}")
-    print(f"  Sentences:  {stats['sentences']:,}")
-    print(f"  Words:      {stats['words']:,}")
-    print(f"  Output:     {output_path}")
+    print(
+        f"  Characters: "
+        f"{raw_characters:,} → "
+        f"{stats['characters']:,}"
+    )
+
+    print(
+        f"  Sentences: "
+        f"{stats['sentences']:,}"
+    )
+
+    print(
+        f"  Words: "
+        f"{stats['words']:,}"
+    )
+
+    print(
+        f"  Output: "
+        f"{output_path}"
+    )
 
 
 # ============================================================
@@ -208,57 +637,102 @@ def process_file(input_path, output_path):
 
 def main():
 
-    # Make sure output directory exists
     PROCESSED_DIR.mkdir(
         parents=True,
         exist_ok=True
     )
 
-    files = sorted(RAW_DIR.glob("*.txt"))
+    files = sorted(
+        RAW_DIR.glob("*.txt")
+    )
 
     if not files:
-        print(f"No .txt files found in: {RAW_DIR}")
+
+        print(
+            f"No .txt files found in: "
+            f"{RAW_DIR}"
+        )
+
         return
 
-    print(f"Found {len(files)} Gutenberg text file(s).")
+    print(
+        f"Found {len(files)} "
+        f"Gutenberg text file(s)."
+    )
 
     total_sentences = 0
     total_words = 0
 
     for input_path in files:
 
-        output_path = PROCESSED_DIR / input_path.name
+        output_path = (
+            PROCESSED_DIR
+            / input_path.name
+        )
 
         process_file(
             input_path,
             output_path
         )
 
-        # Read the generated file to accumulate totals
-        processed_text = output_path.read_text(
-            encoding="utf-8"
+        processed_text = (
+            output_path.read_text(
+                encoding="utf-8"
+            )
         )
 
         sentences = [
             line
-            for line in processed_text.splitlines()
+            for line
+            in processed_text.splitlines()
             if line.strip()
         ]
 
-        stats = calculate_statistics(sentences)
+        stats = calculate_statistics(
+            sentences
+        )
 
-        total_sentences += stats["sentences"]
-        total_words += stats["words"]
+        total_sentences += (
+            stats["sentences"]
+        )
 
-    print("\n" + "=" * 60)
-    print("GUTENBERG PROCESSING COMPLETE")
-    print("=" * 60)
+        total_words += (
+            stats["words"]
+        )
 
-    print(f"Books:      {len(files):,}")
-    print(f"Sentences:  {total_sentences:,}")
-    print(f"Words:      {total_words:,}")
-    print(f"Output:     {PROCESSED_DIR}")
+    print(
+        "\n" + "=" * 60
+    )
+
+    print(
+        "GUTENBERG PROCESSING COMPLETE"
+    )
+
+    print(
+        "=" * 60
+    )
+
+    print(
+        f"Books: "
+        f"{len(files):,}"
+    )
+
+    print(
+        f"Sentences: "
+        f"{total_sentences:,}"
+    )
+
+    print(
+        f"Words: "
+        f"{total_words:,}"
+    )
+
+    print(
+        f"Output: "
+        f"{PROCESSED_DIR}"
+    )
 
 
 if __name__ == "__main__":
+
     main()

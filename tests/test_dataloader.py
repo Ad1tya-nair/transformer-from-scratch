@@ -2,7 +2,7 @@ import torch
 
 from torch.utils.data import DataLoader
 
-from dataset import LanguageModelDataset
+from src.dataset import LanguageModelDataset
 
 
 BATCH_SIZE = 32

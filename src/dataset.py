@@ -11,8 +11,9 @@ from torch.utils.data import Dataset
 
 CONTEXT_LENGTH = 128
 
-DATA_DIR = Path(
-    r"C:\Users\Aditya N\Downloads\llm\tokenized"
+DATA_DIR = (
+    Path(__file__).resolve().parent.parent
+    / "tokenized"
 )
 
 

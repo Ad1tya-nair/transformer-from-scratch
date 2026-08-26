@@ -1,7 +1,7 @@
 {
     "seed": 42,
-    "total_books": 46,
-    "total_words": 4526046,
+    "total_books": 91,
+    "total_words": 6962064,
     "target_ratios": {
         "train": 0.8,
         "validation": 0.1,
@@ -10,15 +10,15 @@
     "train": [
         {
             "file": "alice_in_wonderland.txt",
-            "words": 26526
+            "words": 26525
         },
         {
             "file": "around_the_world.txt",
-            "words": 63335
+            "words": 63334
         },
         {
             "file": "arthuroftheroundtable.txt",
-            "words": 98568
+            "words": 37
         },
         {
             "file": "centeroftheearch.txt",
@@ -26,31 +26,35 @@
         },
         {
             "file": "china.txt",
-            "words": 118882
+            "words": 118881
         },
         {
-            "file": "countess_of_pembroke.txt",
-            "words": 345021
+            "file": "count.txt",
+            "words": 102981
         },
         {
             "file": "cthulu.txt",
-            "words": 11971
+            "words": 26
         },
         {
             "file": "dracula.txt",
-            "words": 160727
+            "words": 160141
         },
         {
             "file": "empty_house.txt",
-            "words": 66897
+            "words": 66896
         },
         {
             "file": "farewell.txt",
-            "words": 88662
+            "words": 88641
         },
         {
             "file": "honeymooninspace.txt",
-            "words": 63875
+            "words": 59998
+        },
+        {
+            "file": "hucleberryfin.txt",
+            "words": 111095
         },
         {
             "file": "illiad.txt",
@@ -58,7 +62,7 @@
         },
         {
             "file": "jane_eyre_autobiography.txt",
-            "words": 185405
+            "words": 184489
         },
         {
             "file": "kidnapped.txt",
@@ -66,15 +70,11 @@
         },
         {
             "file": "king_in_yellow.txt",
-            "words": 71646
-        },
-        {
-            "file": "ladyofthelake.txt",
-            "words": 78539
+            "words": 71645
         },
         {
             "file": "lostworld.txt",
-            "words": 75760
+            "words": 75584
         },
         {
             "file": "maidofmars.txt",
@@ -82,15 +82,11 @@
         },
         {
             "file": "misplacedbattleship.txt",
-            "words": 11302
+            "words": 11260
         },
         {
             "file": "moby.txt",
             "words": 212836
-        },
-        {
-            "file": "onwonderfulnight.txt",
-            "words": 77567
         },
         {
             "file": "paradise.txt",
@@ -98,43 +94,207 @@
         },
         {
             "file": "peterpan.txt",
-            "words": 47269
+            "words": 47229
+        },
+        {
+            "file": "pg113.txt",
+            "words": 80634
+        },
+        {
+            "file": "pg15384.txt",
+            "words": 114102
+        },
+        {
+            "file": "pg16389.txt",
+            "words": 78259
+        },
+        {
+            "file": "pg17157.txt",
+            "words": 52095
+        },
+        {
+            "file": "pg17460.txt",
+            "words": 50324
+        },
+        {
+            "file": "pg1872.txt",
+            "words": 60326
+        },
+        {
+            "file": "pg18875.txt",
+            "words": 64
+        },
+        {
+            "file": "pg19412.txt",
+            "words": 14
+        },
+        {
+            "file": "pg20628.txt",
+            "words": 70529
+        },
+        {
+            "file": "pg2160.txt",
+            "words": 148397
+        },
+        {
+            "file": "pg224.txt",
+            "words": 130334
+        },
+        {
+            "file": "pg23184.txt",
+            "words": 85042
+        },
+        {
+            "file": "pg23599.txt",
+            "words": 9209
+        },
+        {
+            "file": "pg2527.txt",
+            "words": 42504
+        },
+        {
+            "file": "pg26563.txt",
+            "words": 42725
+        },
+        {
+            "file": "pg27997.txt",
+            "words": 44818
+        },
+        {
+            "file": "pg28780.txt",
+            "words": 18401
+        },
+        {
+            "file": "pg29391.txt",
+            "words": 62149
+        },
+        {
+            "file": "pg30340.txt",
+            "words": 32
+        },
+        {
+            "file": "pg31635.txt",
+            "words": 24188
+        },
+        {
+            "file": "pg32854.txt",
+            "words": 2
+        },
+        {
+            "file": "pg3321.txt",
+            "words": 96354
+        },
+        {
+            "file": "pg33823.txt",
+            "words": 77434
+        },
+        {
+            "file": "pg36725.txt",
+            "words": 41317
+        },
+        {
+            "file": "pg38311.txt",
+            "words": 149393
+        },
+        {
+            "file": "pg389.txt",
+            "words": 21716
+        },
+        {
+            "file": "pg38983.txt",
+            "words": 41386
+        },
+        {
+            "file": "pg4712.txt",
+            "words": 25739
+        },
+        {
+            "file": "pg50285.txt",
+            "words": 31
+        },
+        {
+            "file": "pg52404.txt",
+            "words": 39
+        },
+        {
+            "file": "pg558.txt",
+            "words": 40977
+        },
+        {
+            "file": "pg560.txt",
+            "words": 128244
+        },
+        {
+            "file": "pg58820.txt",
+            "words": 56218
+        },
+        {
+            "file": "pg61168.txt",
+            "words": 73526
+        },
+        {
+            "file": "pg6593.txt",
+            "words": 351069
+        },
+        {
+            "file": "pg70114.txt",
+            "words": 22
+        },
+        {
+            "file": "pg72824.txt",
+            "words": 9
+        },
+        {
+            "file": "pg768.txt",
+            "words": 115946
+        },
+        {
+            "file": "pg77092.txt",
+            "words": 66537
+        },
+        {
+            "file": "pg9911.txt",
+            "words": 46583
         },
         {
             "file": "phantom_of_the_opera.txt",
-            "words": 85581
+            "words": 85580
         },
         {
             "file": "pride_and_prejudice.txt",
-            "words": 127363
+            "words": 100734
         },
         {
             "file": "princessofmars.txt",
-            "words": 67437
+            "words": 67436
         },
         {
             "file": "railwaychildren.txt",
             "words": 59355
         },
         {
-            "file": "riddle.txt",
-            "words": 108504
-        },
-        {
             "file": "robinhood.txt",
             "words": 111125
         },
         {
+            "file": "secret_chimneys.txt",
+            "words": 10
+        },
+        {
             "file": "setinsilver.txt",
-            "words": 121663
+            "words": 14
         },
         {
             "file": "thepirate.txt",
-            "words": 197405
+            "words": 187653
         },
         {
             "file": "thousandnights.txt",
-            "words": 178198
+            "words": 178066
+        },
+        {
+            "file": "threemusketeers.txt",
+            "words": 229430
         },
         {
             "file": "time_machine.txt",
@@ -145,56 +305,72 @@
             "words": 70803
         },
         {
-            "file": "treasure_island.txt",
-            "words": 68637
+            "file": "treasureofpearks.txt",
+            "words": 75240
         },
         {
             "file": "trialbywater.txt",
-            "words": 1477
+            "words": 45
         },
         {
             "file": "war_of_the_worlds.txt",
             "words": 60076
-        },
-        {
-            "file": "wizard_of_oz.txt",
-            "words": 39649
         }
     ],
     "validation": [
         {
-            "file": "count.txt",
-            "words": 102981
+            "file": "countess_of_pembroke.txt",
+            "words": 341987
         },
         {
-            "file": "gatsby.txt",
-            "words": 48208
+            "file": "ladyofthelake.txt",
+            "words": 78539
         },
         {
-            "file": "secret_chimneys.txt",
-            "words": 74617
+            "file": "mysterious_affair.txt",
+            "words": 56532
         },
         {
-            "file": "twenty_years.txt",
-            "words": 242060
+            "file": "pg6635.txt",
+            "words": 41886
+        },
+        {
+            "file": "riddle.txt",
+            "words": 108503
+        },
+        {
+            "file": "treasure_island.txt",
+            "words": 68637
         }
     ],
     "test": [
         {
-            "file": "hucleberryfin.txt",
-            "words": 111095
+            "file": "gatsby.txt",
+            "words": 48207
         },
         {
-            "file": "mysterious_affair.txt",
-            "words": 56536
+            "file": "onwonderfulnight.txt",
+            "words": 77164
         },
         {
-            "file": "threemusketeers.txt",
-            "words": 229430
+            "file": "pg3044.txt",
+            "words": 140472
         },
         {
-            "file": "treasureofpearks.txt",
-            "words": 75241
+            "file": "pg524.txt",
+            "words": 96148
+        },
+        {
+            "file": "pg58866.txt",
+            "words": 64611
+        },
+        {
+            "file": "twenty_years.txt",
+            "words": 242060
+        },
+        {
+            "file": "wizard_of_oz.txt",
+            "words": 39648
         }
     ]
 }
